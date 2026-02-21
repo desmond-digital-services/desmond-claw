@@ -1,0 +1,98 @@
+# Manager Configuration Template
+# For team leads, supervisors, and administrators
+# Place in ~/.clawdbot/config.yml or reference via ENV
+
+# ============================================
+# SESSION IDENTITY
+# ============================================
+session:
+  # Your unique label - use format: role-location-number
+  # Examples: manager-dallas, lead-hvac, supervisor-warehouse
+  label: "manager-{{TEAM_NAME}}"
+  
+  # Agent identifier for routing
+  agentId: "manager-{{UNIQUE_ID}}"
+
+# ============================================
+# TOOLS - INTER-AGENT COMMUNICATION
+# ============================================
+tools:
+  # Session communication policies
+  sessions:
+    # "tree" = current session + spawned subagents
+    # "self" = only current session
+    # "agent" = any session under your agentId
+    # "all" = any session in the system
+    visibility: "tree"
+    
+    # Allow messages to/from these patterns
+    allowlist:
+      - "*"  # Can communicate with everyone
+    
+    # Block these patterns
+    denylist: []
+
+# ============================================
+# CHANNELS - WHERE YOU RECEIVE MESSAGES
+# ============================================
+channels:
+  telegram:
+    enabled: true
+    # Your Telegram chat ID
+    chatIds:
+      - {{MANAGER_TELEGRAM_CHAT_ID}}
+  
+  # Add other channels as needed
+  # discord, whatsapp, signal, etc.
+
+# ============================================
+# DEFAULT DELIVERY - FOR CRON/INTERNAL SENDS
+# ============================================
+delivery:
+  channel: "telegram"
+  to: "{{MANAGER_TELEGRAM_CHAT_ID}}"
+
+# ============================================
+# NOTIFICATIONS - WHAT YOU GET NOTIFIED ABOUT
+# ============================================
+notifications:
+  # Get notified when employees complete tasks
+  taskComplete: true
+  
+  # Get notified on errors
+  errors: true
+  
+  # Get daily summaries
+  dailySummary: true
+
+# ============================================
+# EMPLOYEE DIRECTORY (for your reference)
+# ============================================
+teamDirectory:
+  # Map labels to real names and roles
+  #
+  # Example:
+  # "tech-dallas-1": { name: "John Smith", role: "HVAC Tech", phone: "555-0101" }
+  # "tech-dallas-2": { name: "Jane Doe", role: "HVAC Tech", phone: "555-0102" }
+  # "driver-1": { name: "Mike Wilson", role: "Driver", phone: "555-0103" }
+
+# ============================================
+# EXAMPLE: DAILY STANDUP CRON
+# ============================================
+# Uncomment to enable:
+#
+# crons:
+#   dailyStandup:
+#     schedule: { kind: "cron", expr: "0 8 * * 1-5" }
+#     payload:
+#       kind: "agentTurn"
+#       message: |
+#         Good morning! Please do the following:
+#         1. Check your schedule for today
+#         2. Report any blockers
+#         3. Update your task status
+#       sessionTarget: "isolated"
+#     delivery:
+#       mode: "announce"
+#       channel: "telegram"
+#       to: "{{MANAGER_TELEGRAM_CHAT_ID}}"

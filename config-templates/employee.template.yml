@@ -1,0 +1,117 @@
+# Employee Configuration Template
+# For team members (HVAC techs, drivers, sales, etc.)
+# Place in ~/.clawdbot/config.yml or reference via ENV
+
+# ============================================
+# SESSION IDENTITY
+# ============================================
+session:
+  # Your unique label - use format: role-location-number
+  # Examples: tech-dallas-1, driver-houston-2, sales-austin-5
+  label: "{{ROLE}}-{{LOCATION}}-{{NUMBER}}"
+  
+  # Agent identifier for routing
+  agentId: "{{ROLE}}-{{LOCATION}}-{{NUMBER}}"
+
+# ============================================
+# TOOLS - INTER-AGENT COMMUNICATION
+# ============================================
+tools:
+  # Session communication policies
+  sessions:
+    # "tree" = current session + spawned subagents
+    # "self" = only current session
+    # "agent" = any session under your agentId
+    visibility: "tree"
+    
+    # Allow messages from manager and team
+    allowlist:
+      - "manager-*"      # Your manager
+      - "{{TEAM_PREFIX}}*"  # Your team members
+    
+    # Block external teams
+    denylist:
+      - "competitor-*"
+      - "external-*"
+
+# ============================================
+# CHANNELS - WHERE YOU RECEIVE MESSAGES
+# ============================================
+channels:
+  telegram:
+    enabled: true
+    # Your personal Telegram chat ID
+    chatIds:
+      - {{YOUR_TELEGRAM_CHAT_ID}}
+  
+  # Add other channels as needed
+
+# ============================================
+# DEFAULT DELIVERY - FOR REPLIES TO MANAGER
+# ============================================
+delivery:
+  channel: "telegram"
+  to: "{{MANAGER_TELEGRAM_CHAT_ID}}"
+
+# ============================================
+# NOTIFICATIONS - WHAT YOU RECEIVE
+# ============================================
+notifications:
+  # Receive new task assignments
+  newTasks: true
+  
+  # Receive schedule updates
+  scheduleChanges: true
+  
+  # Receive urgent messages
+  urgent: true
+  
+  # Receive daily priorities
+  dailyBriefing: true
+
+# ============================================
+# MANAGER CONTACT
+# ============================================
+manager:
+  label: "manager-{{TEAM_NAME}}"
+  telegramId: "{{MANAGER_TELEGRAM_CHAT_ID}}"
+  name: "{{MANAGER_NAME}}"
+
+# ============================================
+# EXAMPLE: AUTO-REPORT CRON
+# ============================================
+# Uncomment to enable automatic status updates:
+#
+# crons:
+#   endOfDayReport:
+#     schedule: { kind: "cron", expr: "0 17 * * 1-5" }
+#     payload:
+#       kind: "agentTurn"
+#       message: |
+#         End of day report:
+#         1. What did you complete today?
+#         2. Any blockers for tomorrow?
+#         3. Update your availability for tomorrow
+#       sessionTarget: "isolated"
+#     delivery:
+#       mode: "announce"
+#       channel: "telegram"
+#       to: "{{MANAGER_TELEGRAM_CHAT_ID}}"
+
+# ============================================
+# EXAMPLE: NEW LEAD NOTIFICATION
+# ============================================
+# Uncomment to receive new leads automatically:
+#
+# crons:
+#   leadAlert:
+#     schedule: { kind: "cron", expr: "0 9-18 * * 1-5" }
+#     payload:
+#       kind: "agentTurn"
+#       message: |
+#         New lead notification check...
+#       sessionTarget: "isolated"
+#     delivery:
+#       mode: "announce"
+#       channel: "telegram"
+#       to: "{{YOUR_TELEGRAM_CHAT_ID}}"
