@@ -1,17 +1,17 @@
 {
-  "name": "openclaw",
-  "version": "2026.2.21",
-  "description": "Multi-channel AI gateway with extensible messaging integrations",
-  "keywords": [],
-  "homepage": "https://github.com/openclaw/openclaw#readme",
+  "name": "desmond-claw",
+  "version": "1.0.0",
+  "description": "Desmond Digital Services AI Agent Platform - Multi-channel gateway with extensible messaging integrations for business",
+  "keywords": ["ai", "assistant", "agents", "business", "automation"],
+  "homepage": "https://github.com/desmond-digital-services/desmond-claw#readme",
   "bugs": {
-    "url": "https://github.com/openclaw/openclaw/issues"
+    "url": "https://github.com/desmond-digital-services/desmond-claw/issues"
   },
   "license": "MIT",
   "author": "",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/openclaw/openclaw.git"
+    "url": "git+https://github.com/desmond-digital-services/desmond-claw.git"
   },
   "bin": {
     "openclaw": "openclaw.mjs"
