@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Checkout</title>
+  <script src="https://js.stripe.com/v3/"></script>
+</head>
+<body>
+  <div style="max-width: 400px; margin: 50px auto; padding: 20px; font-family: system-ui, sans-serif;">
+    <h2 id="product-name">Product</h2>
+    <p id="product-price" style="font-size: 24px; font-weight: bold;"></p>
+    
+    <div id="payment-element">
+      <!-- Stripe Elements will mount here -->
+    </div>
+    
+    <button id="submit" style="background: #635bff; color: white; border: none; padding: 12px 24px; border-radius: 4px; font-size: 16px; cursor: pointer; width: 100%; margin-top: 20px;">
+      Pay Now
+    </button>
+    
+    <div id="error-message" style="color: #dc2626; margin-top: 10px;"></div>
+  </div>
+
+  <script>
+    // Replace with your publishable key
+    const stripe = Stripe('pk_test_YOUR_PUBLISHABLE_KEY');
+    
+    // Replace with your client secret from your backend
+    const clientSecret = 'cs_test_YOUR_CLIENT_SECRET';
+    
+    const appearance = {
+      theme: 'stripe',
+      variables: {
+        colorPrimary: '#635bff',
+      },
+    };
+    
+    const elements = stripe.elements({ clientSecret, appearance });
+    const paymentElement = elements.create('payment');
+    paymentElement.mount('#payment-element');
+    
+    document.getElementById('submit').addEventListener('click', async () => {
+      const { error } = await stripe.confirmPayment({
+        elements,
+        confirmParams: {
+          // Return URL after payment completion
+          return_url: 'https://yoursite.com/payment-success',
+        },
+      });
+      
+      if (error) {
+        document.getElementById('error-message').textContent = error.message;
+      }
+    });
+  </script>
+</body>
+</html>
