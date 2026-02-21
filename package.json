@@ -14,7 +14,8 @@
     "url": "git+https://github.com/desmond-digital-services/desmond-claw.git"
   },
   "bin": {
-    "openclaw": "openclaw.mjs"
+    "openclaw": "openclaw.mjs",
+    "desmond-claw": "openclaw.mjs"
   },
   "directories": {
     "doc": "docs",

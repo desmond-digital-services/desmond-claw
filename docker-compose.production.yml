@@ -1,0 +1,47 @@
+# Production Docker Compose - Desmond Agent Platform
+# Includes nginx reverse proxy with SSL
+# Usage: docker-compose -f docker-compose.production.yml up -d
+
+services:
+  desmond-agent:
+    image: desmonddigital/desmond-claw:latest
+    container_name: desmond-agent
+    restart: unless-stopped
+    environment:
+      - NODE_ENV=production
+      - OPENCLAW_GATEWAY_TOKEN=${OPENCLAW_GATEWAY_TOKEN}
+      - OPENCLAW_DOMAIN=${DOMAIN}
+    volumes:
+      - desmond-data:/home/node/.desmond
+    networks:
+      - desmond-network
+    healthcheck:
+      test: ["CMD", "node", "openclaw.mjs", "--health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  nginx:
+    image: nginx:latest
+    container_name: desmond-nginx
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./ssl:/etc/nginx/ssl:ro
+    depends_on:
+      - desmond-agent
+    networks:
+      - desmond-network
+    environment:
+      - DOMAIN=${DOMAIN}
+
+volumes:
+  desmond-data:
+    name: desmond-agent-data
+
+networks:
+  desmond-network:
+    driver: bridge
